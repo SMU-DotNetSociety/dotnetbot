@@ -215,26 +215,35 @@ function register(bot) {
         return bot.editMessageReplyMarkup({ chatId, messageId }, { replyMarkup });
     })
 
+    // this shouldn't be here.. but for now close one eye
     bot.on("/edit", msg => {
-        if (!session.name) {
-            bot.sendMessage(msg.from.id, "You haven't register a profile with me yet, would you like to do that now? What is your name?", {ask: 'name'})
-        } else {
-            const markup = displayProfileKeyboard(session);
-            bot.sendMessage(msg.from.id, 'Edit your profile details \nWhich data field has errors?', { replyMarkup: markup })
-            .then((result) => {
-                confirmationMessage = [msg.from.id, result.message_id]; // store this confirmation message
-            })
-        }
+        let userId = msg.from.id;
+        db.ref(`users/${userId}`).once('value').then(function (snapshot) {
+            console.log("--- snapshot from firebase db ---")
+            console.log(snapshot.val())
+
+            if (snapshot.val()) {
+                console.log("profile found")
+                const markup = displayProfileKeyboard(snapshot.val());
+                bot.sendMessage(msg.from.id, 'Edit your profile details \nWhich data field has errors?', { replyMarkup: markup })
+                .then((result) => {
+                    confirmationMessage = [msg.from.id, result.message_id]; // store this confirmation message
+                })
+            } else {
+                console.log("profile not found")
+                bot.sendMessage(msg.from.id, "You haven't register a profile with me yet, would you like to do that now? What is your name?", { ask: 'name' })
+            }
+        });
     })
 
     // Returns keyboard markup
     function displayProfileKeyboard(data) {
         console.log("--- displayProfileKeyboard ---")
 
-        let name = session.name;
-        let email = session.email;
-        let year = session.year;
-        let faculty = session.faculty;
+        let name = data.name;
+        let email = data.email;
+        let year = data.year;
+        let faculty = data.faculty;
         let done = "/done";
 
 
