@@ -1,0 +1,19 @@
+{
+  "name": "bob_bot",
+  "version": "1.0.0",
+  "description": "DotNet telegram chatbot using Telebot framework",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DotNet Society",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "firebase": "^5.3.0",
+    "node-emoji": "^1.8.1",
+    "telebot": "^1.2.6"
+  }
+}
