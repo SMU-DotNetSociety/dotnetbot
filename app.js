@@ -1,47 +1,37 @@
-require('./config/config')
-
+const _ = require('lodash');
+const emoji = require('node-emoji');
 const TeleBot = require('telebot');
-process.on('uncaughtException', function (err) {
-    console.error(err.stack);
+const config = require('./config');
+
+process.on('uncaughtException', (err) => {
+  console.error(err.stack);
 });
 
-process.on('unhandledRejection', function (reason, p) {
-    console.log(reason.message);
+process.on('unhandledRejection', (reason, p) => {
+  console.log(reason.message);
 });
-
-const port = process.env.PORT
-const url = process.env.HEROKU_URL
-const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new TeleBot({
-    token: token, // Required. Telegram Bot API token.
-    usePlugins: ['askUser']
+  token: config.token, // Required. Telegram Bot API token.
+  usePlugins: ['askUser'],
 });
 
-
-// import bot functions/
-require('./functions/start').start(bot);
-require('./functions/register').register(bot);
+// import bot functions
 require('./functions/help').help(bot);
-require('./functions/greetings').greetings(bot);
-require('./functions/test').test(bot);
+require('./functions/register').register(bot);
+require('./functions/start').start(bot);
 
 // bot error handling / debugging
 // require('./error').error(bot);
 
-// echo bot
-/* bot.on('text', (msg) => {
-    console.log(msg)
-    return msg.reply.text(msg.text)
-}); */
-
 bot.on('newChatMembers', (msg) => {
-    console.log(msg)
-    // bot.sendMessage(msg.from.id, "Welcome to SMU's Microsoft Student Community, hooray!");
-})
+  let newMembers = [];
+  _.each(msg.new_chat_members, (n) => {
+    newMembers.push(n.first_name);
+  });
+  newMembers = newMembers.join(', ');
 
-// bot.on(/(show\s)?kitty*/, (msg) => {
-//     return msg.reply.photo('http://thecatapi.com/api/images/get');
-// });
+  bot.sendMessage(msg.chat.id, `Hey ${newMembers}, Welcome to SMU's Microsoft Student Community, hooray! ${emoji.get('smile')}`);
+});
 
 bot.start();
