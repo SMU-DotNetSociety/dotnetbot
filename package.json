@@ -11,7 +11,7 @@
   "author": "DotNet Society",
   "license": "ISC",
   "engines": {
-    "node": ">=8.11.0"
+    "node": "8.11.1"
   },
   "dependencies": {
     "dotenv": "^6.0.0",
