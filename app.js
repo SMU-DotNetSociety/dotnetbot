@@ -31,7 +31,8 @@ bot.on('newChatMembers', (msg) => {
   });
   newMembers = newMembers.join(', ');
 
-  bot.sendMessage(msg.chat.id, `Hey ${newMembers}, Welcome to SMU's Microsoft Student Community, hooray! ${emoji.get('smile')}`);
+  const response = `Hey ${newMembers}, Welcome to SMU's Microsoft Student Community, hooray! ${emoji.get('smile')}`;
+  bot.sendMessage(msg.chat.id, response);
 });
 
 bot.start();
